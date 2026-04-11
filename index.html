@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>بئر النفط • منصتي</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', 'Tajawal', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(145deg, #1a1a2e 0%, #16213e 100%);
+      min-height: 100vh;
+      color: #f8fafc;
+      overflow-x: hidden;
+      width: 100%;
+      max-width: 100vw;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* ========== هيدر بئر النفط ========== */
+    .oil-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: rgba(26, 26, 46, 0.95);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      padding: 12px 16px;
+      z-index: 999;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      border-bottom: 2px solid #2dd4bf;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .oil-header h2 {
+      font-size: 20px;
+      font-weight: 800;
+      color: #f8fafc;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .oil-header h2 i {
+      color: #2dd4bf;
+      font-size: 22px;
+    }
+
+    .back-btn {
+      cursor: pointer;
+      color: #94a3b8;
+      font-size: 20px;
+      transition: all 0.2s;
+    }
+
+    .back-btn:hover {
+      color: #2dd4bf;
+    }
+
+    /* ========== عرض الموارد ========== */
+    .resources-bar {
+      position: fixed;
+      top: 60px;
+      left: 0;
+      right: 0;
+      background: rgba(22, 33, 62, 0.95);
+      backdrop-filter: blur(20px);
+      padding: 12px 16px;
+      z-index: 998;
+      border-bottom: 1px solid rgba(45, 212, 191, 0.2);
+      display: flex;
+      justify-content: space-around;
+    }
+
+    .resource-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 6px 16px;
+      border-radius: 40px;
+      border: 1px solid rgba(45, 212, 191, 0.2);
+    }
+
+    .resource-badge i {
+      font-size: 16px;
+    }
+
+    .resource-badge.money i { color: #10b981; }
+    .resource-badge.oil i { color: #2dd4bf; }
+
+    .resource-badge span {
+      font-weight: 800;
+      font-size: 16px;
+    }
+
+    /* ========== المحتوى الرئيسي ========== */
+    .oil-container {
+      margin-top: 125px;
+      padding: 15px;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* بطاقة البئر الرئيسية */
+    .oil-well-card {
+      background: linear-gradient(145deg, #0f3460, #1a1a2e);
+      border-radius: 35px;
+      padding: 30px 20px;
+      margin-bottom: 25px;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 0 2px rgba(45, 212, 191, 0.3);
+      border: 1px solid rgba(45, 212, 191, 0.2);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .oil-well-card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(45, 212, 191, 0.05) 0%, transparent 70%);
+      animation: rotate 20s linear infinite;
+    }
+
+    @keyframes rotate {
+      100% { transform: rotate(360deg); }
+    }
+
+    .well-icon {
+      position: relative;
+      z-index: 1;
+    }
+
+    .well-icon i {
+      font-size: 70px;
+      color: #2dd4bf;
+      filter: drop-shadow(0 0 30px rgba(45, 212, 191, 0.5));
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    .well-level {
+      position: relative;
+      z-index: 1;
+      margin: 20px 0;
+    }
+
+    .level-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, #2dd4bf, #0d9488);
+      padding: 8px 25px;
+      border-radius: 50px;
+      font-weight: 800;
+      font-size: 18px;
+      color: #0f172a;
+      box-shadow: 0 8px 20px rgba(45, 212, 191, 0.3);
+    }
+
+    .production-info {
+      position: relative;
+      z-index: 1;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 25px;
+      padding: 20px;
+      margin: 20px 0;
+    }
+
+    .production-rate {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      font-size: 28px;
+      font-weight: 800;
+      color: #2dd4bf;
+    }
+
+    .production-rate i {
+      font-size: 24px;
+    }
+
+    .production-label {
+      color: #94a3b8;
+      font-size: 13px;
+      margin-top: 5px;
+    }
+
+    .next-collection {
+      background: rgba(45, 212, 191, 0.1);
+      border-radius: 20px;
+      padding: 15px;
+      margin: 15px 0;
+      border: 1px dashed #2dd4bf;
+    }
+
+    .timer {
+      font-size: 32px;
+      font-weight: 800;
+      color: #fbbf24;
+      font-family: monospace;
+    }
+
+    .timer-label {
+      color: #94a3b8;
+      font-size: 12px;
+    }
+
+    .collect-btn {
+      background: linear-gradient(135deg, #2dd4bf, #0d9488);
+      border: none;
+      color: #0f172a;
+      padding: 18px 30px;
+      border-radius: 50px;
+      font-weight: 800;
+      font-size: 18px;
+      cursor: pointer;
+      width: 100%;
+      box-shadow: 0 10px 30px rgba(45, 212, 191, 0.4);
+      transition: all 0.3s;
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .collect-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 40px rgba(45, 212, 191, 0.5);
+    }
+
+    .collect-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    /* ========== بطاقات الترقية ========== */
+    .upgrades-section {
+      margin-top: 25px;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 18px;
+      color: #f8fafc;
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .section-title i {
+      color: #fbbf24;
+    }
+
+    .upgrade-card {
+      background: linear-gradient(145deg, #1e3a5f, #0f3460);
+      border-radius: 25px;
+      padding: 18px;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      border: 1px solid rgba(45, 212, 191, 0.2);
+      transition: all 0.2s;
+      position: relative;
+    }
+
+    .upgrade-card.purchased {
+      opacity: 0.7;
+      border-color: #10b981;
+    }
+
+    .upgrade-card.purchased::after {
+      content: '✓';
+      position: absolute;
+      top: 10px;
+      left: 15px;
+      width: 25px;
+      height: 25px;
+      background: #10b981;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      color: white;
+    }
+
+    .upgrade-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 20px;
+      background: linear-gradient(145deg, #2dd4bf, #0d9488);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      color: #0f172a;
+      flex-shrink: 0;
+    }
+
+    .upgrade-info {
+      flex: 1;
+    }
+
+    .upgrade-name {
+      font-weight: 800;
+      font-size: 16px;
+      margin-bottom: 5px;
+      color: #f8fafc;
+    }
+
+    .upgrade-desc {
+      font-size: 12px;
+      color: #94a3b8;
+      margin-bottom: 8px;
+    }
+
+    .upgrade-benefit {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #2dd4bf;
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .upgrade-benefit i {
+      font-size: 12px;
+    }
+
+    .upgrade-price {
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .price-value {
+      font-weight: 800;
+      font-size: 18px;
+      color: #10b981;
+    }
+
+    .price-label {
+      font-size: 10px;
+      color: #94a3b8;
+    }
+
+    .buy-btn {
+      background: linear-gradient(135deg, #10b981, #059669);
+      border: none;
+      color: white;
+      padding: 10px 18px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 12px;
+      cursor: pointer;
+      margin-top: 8px;
+      width: 100%;
+      transition: all 0.2s;
+    }
+
+    .buy-btn:hover {
+      transform: scale(1.02);
+    }
+
+    .buy-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .purchased-badge {
+      color: #10b981;
+      font-weight: 700;
+      font-size: 12px;
+      margin-top: 8px;
+    }
+
+    /* ========== سجل الإنتاج ========== */
+    .history-section {
+      margin-top: 30px;
+      padding-bottom: 30px;
+    }
+
+    .history-card {
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 20px;
+      padding: 15px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .history-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .history-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 15px;
+      background: rgba(45, 212, 191, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #2dd4bf;
+    }
+
+    .history-details .history-title {
+      font-weight: 600;
+      margin-bottom: 3px;
+    }
+
+    .history-details .history-time {
+      font-size: 11px;
+      color: #64748b;
+    }
+
+    .history-amount {
+      font-weight: 800;
+      color: #2dd4bf;
+      font-size: 18px;
+    }
+
+    /* ========== حالة فارغة ========== */
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: #64748b;
+    }
+
+    .empty-state i {
+      font-size: 50px;
+      opacity: 0.3;
+      margin-bottom: 15px;
+    }
+
+    /* ========== إشعار ========== */
+    #toastMsg {
+      position: fixed;
+      bottom: 30px;
+      left: 20px;
+      right: 20px;
+      background: #1e293b;
+      color: white;
+      padding: 14px 20px;
+      border-radius: 50px;
+      text-align: center;
+      z-index: 5000;
+      opacity: 0;
+      transition: 0.25s;
+      pointer-events: none;
+      max-width: 400px;
+      margin: 0 auto;
+      font-weight: 600;
+    }
+
+    #toastMsg.show {
+      opacity: 1;
+      bottom: 40px;
+    }
+
+    /* تحميل */
+    .loading-spinner {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 50px;
+    }
+
+    .loading-spinner i {
+      font-size: 35px;
+      color: #2dd4bf;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* تأثير الجزيئات */
+    .particles {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      pointer-events: none;
+    }
+
+    .particle {
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      background: #2dd4bf;
+      border-radius: 50%;
+      opacity: 0.3;
+      animation: float 8s infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(180deg); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- هيدر بئر النفط -->
+<div class="oil-header">
+  <div class="back-btn" onclick="goBack()">
+    <i class="fas fa-arrow-right"></i>
+  </div>
+  <h2><i class="fas fa-oil-can"></i> بئر النفط</h2>
+  <div style="width: 24px;"></div>
+</div>
+
+<!-- شريط الموارد -->
+<div class="resources-bar">
+  <div class="resource-badge money">
+    <i class="fas fa-coins"></i>
+    <span id="moneyDisplay">0</span>
+  </div>
+  <div class="resource-badge oil">
+    <i class="fas fa-oil-can"></i>
+    <span id="oilDisplay">0</span>
+  </div>
+</div>
+
+<!-- المحتوى الرئيسي -->
+<div class="oil-container" id="oilContainer">
+  <div class="loading-spinner"><i class="fas fa-spinner"></i></div>
+</div>
+
+<div id="toastMsg"></div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js";
+  import { getFirestore, doc, getDoc, setDoc, updateDoc, increment, arrayUnion, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDYKCCTcurNcJslrNKqdiJCoIIK-YZArB4",
+    authDomain: "sbaq-fc46f.firebaseapp.com",
+    projectId: "sbaq-fc46f",
+    storageBucket: "sbaq-fc46f.firebasestorage.app",
+    appId: "1:1026865750415:web:0ee39a717bcafaa0d06bfa"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  // مستويات بئر النفط
+  const WELL_LEVELS = {
+    0: { name: 'بئر صغير', production: 10, upgradeCost: 0 },
+    1: { name: 'بئر متوسط', production: 50, upgradeCost: 1000 },
+    2: { name: 'بئر كبير', production: 100, upgradeCost: 1500 },
+    3: { name: 'بئر عملاق', production: 500, upgradeCost: 5000 }
+  };
+
+  let currentUser = null;
+  let currentUserData = null;
+  let resources = { money: 0, oil: 0 };
+  let oilWellData = {
+    level: 0,
+    lastCollection: 0,
+    collectionHistory: []
+  };
+  let timerInterval = null;
+
+  function showToast(msg, isSuccess = true) {
+    const t = document.getElementById('toastMsg');
+    if (!t) return;
+    t.textContent = msg;
+    t.style.background = isSuccess ? '#10b981' : '#ef4444';
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2800);
+  }
+
+  // تعديل دالة الرجوع - بدون توجيه لصفحة 404
+  window.goBack = function() {
+    // محاولة الرجوع للصفحة السابقة في المتصفح
+    if (document.referrer && document.referrer.includes(window.location.hostname)) {
+      window.history.back();
+    } else {
+      // إذا لم توجد صفحة سابقة، عرض رسالة
+      showToast('لا توجد صفحة سابقة للرجوع إليها');
+    }
+  };
+
+  function formatNumber(num) {
+    return num?.toLocaleString('ar-SA') || '0';
+  }
+
+  function formatTime(seconds) {
+    if (seconds <= 0) return '00:00:00';
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    const s = seconds % 60;
+    return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+  }
+
+  async function loadUserData(uid) {
+    try {
+      const userDoc = await getDoc(doc(db, "users", uid));
+      if (userDoc.exists()) {
+        currentUserData = userDoc.data();
+      }
+      
+      const resourcesDoc = await getDoc(doc(db, "resources", uid));
+      if (resourcesDoc.exists()) {
+        resources = resourcesDoc.data();
+      } else {
+        resources = { money: 1000, oil: 0 };
+        await setDoc(doc(db, "resources", uid), resources);
+      }
+      
+      const oilWellDoc = await getDoc(doc(db, "oil_wells", uid));
+      if (oilWellDoc.exists()) {
+        oilWellData = oilWellDoc.data();
+      } else {
+        oilWellData = {
+          level: 0,
+          lastCollection: Date.now(),
+          collectionHistory: []
+        };
+        await setDoc(doc(db, "oil_wells", uid), oilWellData);
+      }
+      
+      updateResourcesDisplay();
+      renderOilWell();
+      startTimer();
+    } catch (error) {
+      console.error("خطأ في تحميل البيانات:", error);
+    }
+  }
+
+  function updateResourcesDisplay() {
+    document.getElementById('moneyDisplay').textContent = formatNumber(resources.money || 0);
+    document.getElementById('oilDisplay').textContent = formatNumber(resources.oil || 0);
+  }
+
+  function getTimeUntilNextCollection() {
+    const now = Date.now();
+    const lastCollection = oilWellData.lastCollection || now;
+    const elapsed = Math.floor((now - lastCollection) / 1000);
+    const cooldown = 24 * 60 * 60; // 24 ساعة
+    const remaining = Math.max(0, cooldown - elapsed);
+    return { remaining, canCollect: remaining === 0 };
+  }
+
+  function getCurrentProduction() {
+    const level = oilWellData.level || 0;
+    return WELL_LEVELS[level]?.production || 10;
+  }
+
+  function startTimer() {
+    if (timerInterval) clearInterval(timerInterval);
+    
+    timerInterval = setInterval(() => {
+      const { remaining, canCollect } = getTimeUntilNextCollection();
+      const timerElement = document.getElementById('collectionTimer');
+      if (timerElement) {
+        timerElement.textContent = formatTime(remaining);
+      }
+      
+      const collectBtn = document.getElementById('collectBtn');
+      if (collectBtn) {
+        collectBtn.disabled = !canCollect;
+      }
+    }, 1000);
+  }
+
+  function renderOilWell() {
+    const container = document.getElementById('oilContainer');
+    if (!container) return;
+    
+    const level = oilWellData.level || 0;
+    const levelInfo = WELL_LEVELS[level];
+    const production = getCurrentProduction();
+    const { remaining, canCollect } = getTimeUntilNextCollection();
+    const history = oilWellData.collectionHistory || [];
+    
+    // إنشاء جزيئات متحركة
+    const particles = Array.from({ length: 15 }, (_, i) => `
+      <div class="particle" style="left: ${Math.random() * 100}%; top: ${Math.random() * 100}%; animation-delay: ${Math.random() * 8}s; animation-duration: ${6 + Math.random() * 6}s;"></div>
+    `).join('');
+    
+    container.innerHTML = `
+      <div class="oil-well-card">
+        <div class="particles">${particles}</div>
+        
+        <div class="well-icon">
+          <i class="fas fa-oil-well"></i>
+        </div>
+        
+        <div class="well-level">
+          <span class="level-badge">
+            <i class="fas fa-tachometer-alt"></i> ${levelInfo.name}
+          </span>
+        </div>
+        
+        <div class="production-info">
+          <div class="production-rate">
+            <i class="fas fa-oil-can"></i>
+            <span>${production}</span>
+          </div>
+          <div class="production-label">إنتاج يومي</div>
+        </div>
+        
+        <div class="next-collection">
+          <div class="timer" id="collectionTimer">${formatTime(remaining)}</div>
+          <div class="timer-label">متبقي حتى التجميع القادم</div>
+        </div>
+        
+        <button class="collect-btn" id="collectBtn" onclick="collectOil()" ${!canCollect ? 'disabled' : ''}>
+          <i class="fas fa-hand-holding"></i>
+          ${canCollect ? `تجميع ${production} نفط` : 'غير متاح للتجميع'}
+        </button>
+      </div>
+      
+      <div class="upgrades-section">
+        <div class="section-title">
+          <i class="fas fa-arrow-up"></i>
+          <span>ترقية البئر</span>
+        </div>
+        
+        ${renderUpgradeCards(level)}
+      </div>
+      
+      <div class="history-section">
+        <div class="section-title">
+          <i class="fas fa-history"></i>
+          <span>سجل التجميع</span>
+        </div>
+        
+        ${history.length > 0 ? history.slice(-10).reverse().map(item => `
+          <div class="history-card">
+            <div class="history-info">
+              <div class="history-icon">
+                <i class="fas fa-oil-can"></i>
+              </div>
+              <div class="history-details">
+                <div class="history-title">${WELL_LEVELS[item.level]?.name || 'بئر'}</div>
+                <div class="history-time">${new Date(item.timestamp).toLocaleString('ar-SA')}</div>
+              </div>
+            </div>
+            <div class="history-amount">+${formatNumber(item.amount)} 🛢️</div>
+          </div>
+        `).join('') : `
+          <div class="empty-state">
+            <i class="fas fa-oil-can"></i>
+            <p>لا يوجد سجل تجميع بعد</p>
+          </div>
+        `}
+      </div>
+    `;
+  }
+
+  function renderUpgradeCards(currentLevel) {
+    const cards = [];
+    
+    for (let level = 1; level <= 3; level++) {
+      const levelInfo = WELL_LEVELS[level];
+      const isPurchased = currentLevel >= level;
+      const canAfford = resources.money >= levelInfo.upgradeCost;
+      const nextLevelInfo = WELL_LEVELS[currentLevel];
+      
+      // لا نعرض الترقيات التي تم شراؤها إلا إذا كانت الحالية
+      if (isPurchased && level !== currentLevel) continue;
+      
+      cards.push(`
+        <div class="upgrade-card ${isPurchased ? 'purchased' : ''}">
+          <div class="upgrade-icon">
+            <i class="fas fa-${level === 1 ? 'arrow-up' : level === 2 ? 'arrow-trend-up' : 'crown'}"></i>
+          </div>
+          <div class="upgrade-info">
+            <div class="upgrade-name">${levelInfo.name}</div>
+            <div class="upgrade-desc">ترقية من ${WELL_LEVELS[level-1]?.name}</div>
+            <div class="upgrade-benefit">
+              <i class="fas fa-oil-can"></i>
+              <span>إنتاج ${levelInfo.production} نفط/يوم</span>
+            </div>
+          </div>
+          <div class="upgrade-price">
+            ${!isPurchased ? `
+              <div class="price-value">${formatNumber(levelInfo.upgradeCost)}</div>
+              <div class="price-label">مال</div>
+              <button class="buy-btn" onclick="purchaseUpgrade(${level})" ${!canAfford ? 'disabled' : ''}>
+                ${canAfford ? 'شراء' : 'رصيد غير كافٍ'}
+              </button>
+            ` : `
+              <div class="purchased-badge">
+                <i class="fas fa-check-circle"></i> تم الشراء
+              </div>
+            `}
+          </div>
+        </div>
+      `);
+    }
+    
+    return cards.join('');
+  }
+
+  window.collectOil = async function() {
+    const { canCollect } = getTimeUntilNextCollection();
+    if (!canCollect) {
+      showToast('لم يحن وقت التجميع بعد', false);
+      return;
+    }
+    
+    const production = getCurrentProduction();
+    const currentLevel = oilWellData.level || 0;
+    
+    try {
+      // تحديث البيانات
+      const newOil = (resources.oil || 0) + production;
+      
+      await updateDoc(doc(db, "resources", currentUser.uid), {
+        oil: newOil
+      });
+      
+      const historyEntry = {
+        amount: production,
+        level: currentLevel,
+        timestamp: Date.now()
+      };
+      
+      await updateDoc(doc(db, "oil_wells", currentUser.uid), {
+        lastCollection: Date.now(),
+        collectionHistory: arrayUnion(historyEntry)
+      });
+      
+      // تحديث محلي
+      resources.oil = newOil;
+      oilWellData.lastCollection = Date.now();
+      oilWellData.collectionHistory = [...(oilWellData.collectionHistory || []), historyEntry];
+      
+      updateResourcesDisplay();
+      renderOilWell();
+      startTimer();
+      
+      showToast(`تم تجميع ${production} نفط!`, true);
+      
+    } catch (error) {
+      console.error("خطأ في التجميع:", error);
+      showToast('فشل التجميع', false);
+    }
+  };
+
+  window.purchaseUpgrade = async function(targetLevel) {
+    const currentLevel = oilWellData.level || 0;
+    
+    if (targetLevel <= currentLevel) {
+      showToast('لقد قمت بشراء هذه الترقية مسبقاً', false);
+      return;
+    }
+    
+    if (targetLevel !== currentLevel + 1) {
+      showToast('يجب شراء الترقيات بالترتيب', false);
+      return;
+    }
+    
+    const levelInfo = WELL_LEVELS[targetLevel];
+    if (!levelInfo) return;
+    
+    if (resources.money < levelInfo.upgradeCost) {
+      showToast('رصيدك غير كافٍ', false);
+      return;
+    }
+    
+    try {
+      const newMoney = resources.money - levelInfo.upgradeCost;
+      
+      await updateDoc(doc(db, "resources", currentUser.uid), {
+        money: newMoney
+      });
+      
+      await updateDoc(doc(db, "oil_wells", currentUser.uid), {
+        level: targetLevel
+      });
+      
+      // تحديث محلي
+      resources.money = newMoney;
+      oilWellData.level = targetLevel;
+      
+      updateResourcesDisplay();
+      renderOilWell();
+      startTimer();
+      
+      showToast(`تمت الترقية إلى ${levelInfo.name}!`, true);
+      
+    } catch (error) {
+      console.error("خطأ في الترقية:", error);
+      showToast('فشلت الترقية', false);
+    }
+  };
+
+  // تعديل onAuthStateChanged - بدون توجيه لصفحة 404
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      currentUser = user;
+      await loadUserData(user.uid);
+    } else {
+      // عرض رسالة بدلاً من التوجيه لصفحة غير موجودة
+      const container = document.getElementById('oilContainer');
+      if (container) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <i class="fas fa-sign-in-alt"></i>
+            <p>يرجى تسجيل الدخول للوصول إلى بئر النفط</p>
+          </div>
+        `;
+      }
+    }
+  });
+
+  // تنظيف المؤقت عند الخروج
+  window.addEventListener('beforeunload', () => {
+    if (timerInterval) clearInterval(timerInterval);
+  });
+</script>
+</body>
+</html>
