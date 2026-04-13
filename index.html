@@ -12,8 +12,7 @@
       box-sizing: border-box;
       font-family: 'Segoe UI', 'Tajawal', sans-serif;
     }
-
-  .add-well-btn { display: none !important; }
+.add-well-btn { display: none !important; }
 .oil-header { justify-content: center !important; }
 .oil-header h2 { margin: 0 auto !important; }
     body {
@@ -1027,10 +1026,10 @@
 
   // مستويات البئر الأساسي
   const WELL_LEVELS = {
-    0: { name: 'بئر صغير', production: 2, upgradeCost: 0 },
-    1: { name: 'بئر متوسط', production: 500, upgradeCost: 10000 },
-    2: { name: 'بئر كبير', production: 1000, upgradeCost: 15000 },
-    3: { name: 'بئر عملاق', production: 5000, upgradeCost: 50000 }
+    0: { name: 'بئر صغير', production: 10, upgradeCost: 0 },
+    1: { name: 'بئر متوسط', production: 50, upgradeCost: 1000 },
+    2: { name: 'بئر كبير', production: 100, upgradeCost: 1500 },
+    3: { name: 'بئر عملاق', production: 500, upgradeCost: 5000 }
   };
 
   let currentUser = null;
@@ -1106,7 +1105,7 @@
 
   async function loadAvailableWells() {
     try {
-      const wellsDoc = await getDoc(doc(db, "system"));
+      const wellsDoc = await getDoc(doc(db, "system", "available_wells"));
       if (wellsDoc.exists()) {
         availableWells = wellsDoc.data().wells || [];
       } else {
@@ -1115,7 +1114,7 @@
             id: 'well1',
             name: 'بئر الخليج',
             dailyOil: 100,
-            goldPrice: 5000000,
+            goldPrice: 5000,
             durationMonths: 3,
             image: '',
             description: 'بئر نفطي في منطقة الخليج العربي',
@@ -1125,7 +1124,7 @@
             id: 'well2',
             name: 'بئر الصحراء',
             dailyOil: 250,
-            goldPrice: 1200000,
+            goldPrice: 12000,
             durationMonths: 6,
             image: '',
             description: 'بئر عميق في الصحراء',
