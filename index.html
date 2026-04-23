@@ -12,10 +12,10 @@
       box-sizing: border-box;
       font-family: 'Segoe UI', 'Tajawal', sans-serif;
     }
-.add-well-btn { display: none !important; }
-.oil-header { justify-content: center !important; }
+.back-btn, .add-well-btn { display: none !important; }
 .oil-header h2 { margin: 0 auto !important; }
     body {
+      margin-top: 8px; background: linear-gradient(145deg, #f8fafc, #e2e8f0) !important; border: none !important; box-shadow: inset 2px 2px 5px #ffffff, inset -2px -2px 5px #94a3b8, 3px 3px 8px rgba(0,0,0,0.1), -1px -1px 4px rgba(255,255,255,0.6) !important; border-radius: 30px !important; padding: 2px 2px 2px 10px !important; display: flex; align-items: center;
       background: linear-gradient(145deg, #1a1a2e 0%, #16213e 100%);
       min-height: 100vh;
       color: #f8fafc;
@@ -27,6 +27,7 @@
 
     /* ========== هيدر ========== */
     .oil-header {
+      margin-top: 8px; background: linear-gradient(145deg, #f8fafc, #e2e8f0) !important; border: none !important; box-shadow: inset 2px 2px 5px #ffffff, inset -2px -2px 5px #94a3b8, 3px 3px 8px rgba(0,0,0,0.1), -1px -1px 4px rgba(255,255,255,0.6) !important; border-radius: 30px !important; padding: 2px 2px 2px 10px !important; display: flex; align-items: center; color: #16a34a !important; font-weight: bold !important;
       position: fixed;
       top: 0;
       left: 0;
@@ -44,6 +45,7 @@
     }
 
     .oil-header h2 {
+      margin-top: 8px; background: linear-gradient(145deg, #f8fafc, #e2e8f0) !important; border: none !important; box-shadow: inset 2px 2px 5px #ffffff, inset -2px -2px 5px #94a3b8, 3px 3px 8px rgba(0,0,0,0.1), -1px -1px 4px rgba(255,255,255,0.6) !important; border-radius: 30px !important; padding: 2px 2px 2px 10px !important; display: flex; align-items: center; color: #16a34a !important; font-weight: bold !important;
       font-size: 20px;
       font-weight: 800;
       color: #f8fafc;
@@ -78,6 +80,7 @@
 
     /* ========== عرض الموارد ========== */
     .resources-bar {
+      margin-bottom: 8px; background: linear-gradient(145deg, #f8fafc, #e2e8f0) !important; border: none !important; box-shadow: inset 2px 2px 5px #ffffff, inset -2px -2px 5px #94a3b8, 3px 3px 8px rgba(0,0,0,0.1), -1px -1px 4px rgba(255,255,255,0.6) !important; border-radius: 30px !important; padding: 2px 2px 2px 10px !important; display: flex; align-items: center; color: #16a34a !important; font-weight: bold !important;
       position: fixed;
       top: 60px;
       left: 0;
@@ -92,6 +95,7 @@
     }
 
     .resource-badge {
+      margin-bottom: 8px; background: linear-gradient(145deg, #f8fafc, #e2e8f0) !important; border: none !important; box-shadow: inset 2px 2px 5px #ffffff, inset -2px -2px 5px #94a3b8, 3px 3px 8px rgba(0,0,0,0.1), -1px -1px 4px rgba(255,255,255,0.6) !important; border-radius: 30px !important; padding: 2px 2px 2px 10px !important; display: flex; align-items: center; color: #16a34a !important; font-weight: bold !important;
       display: flex;
       align-items: center;
       gap: 8px;
@@ -115,6 +119,7 @@
 
     /* ========== المحتوى الرئيسي ========== */
     .oil-container {
+      
       margin-top: 125px;
       padding: 15px;
       max-width: 600px;
@@ -123,34 +128,139 @@
     }
 
     /* بطاقة البئر الأساسي */
-    .main-well-card {
-      background: linear-gradient(145deg, #0f3460, #1a1a2e);
-      border-radius: 35px;
-      padding: 30px 20px;
-      margin-bottom: 25px;
-      text-align: center;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 0 2px rgba(45, 212, 191, 0.3);
-      border: 1px solid rgba(45, 212, 191, 0.2);
-      position: relative;
-      overflow: hidden;
-    }
+    
+.main-well-card {
+  background: linear-gradient(145deg, #0f172a, #1e293b);
+  border-radius: 35px;
+  padding: 30px 20px;
+  margin-bottom: 25px;
+  text-align: center;
+  box-shadow: 
+    inset 3px 3px 8px rgba(255,255,255,0.05),
+    inset -3px -3px 8px rgba(0,0,0,0.5),
+    0 15px 30px rgba(0, 0, 0, 0.5),
+    0 0 0 2px rgba(148, 163, 184, 0.15);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  position: relative;
+  overflow: hidden;
+  color: #e2e8f0;
+  z-index: 1;
+}
 
-    .main-well-card::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: radial-gradient(circle, rgba(45, 212, 191, 0.05) 0%, transparent 70%);
-      animation: rotate 20s linear infinite;
-    }
+/* لمعان زيتي */
+.main-well-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    radial-gradient(circle at 20% 30%, rgba(250,204,21,0.08) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(59,130,246,0.06) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(168,85,247,0.05) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 2;
+}
 
-    @keyframes rotate {
-      100% { transform: rotate(360deg); }
-    }
+/* الحبيبات - 20 حبة */
+.main-well-card .oil-1,
+.main-well-card .oil-2,
+.main-well-card .oil-3,
+.main-well-card .oil-4,
+.main-well-card .oil-5,
+.main-well-card .oil-6,
+.main-well-card .oil-7,
+.main-well-card .oil-8,
+.main-well-card .oil-9,
+.main-well-card .oil-10,
+.main-well-card .oil-11,
+.main-well-card .oil-12,
+.main-well-card .oil-13,
+.main-well-card .oil-14,
+.main-well-card .oil-15,
+.main-well-card .oil-16,
+.main-well-card .oil-17,
+.main-well-card .oil-18,
+.main-well-card .oil-19,
+.main-well-card .oil-20 {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(1px);
+  z-index: 3;
+}
 
+/* حبيبات بأحجام وألوان مختلفة */
+.main-well-card .oil-1 { width: 8px; height: 8px; background: rgba(250,204,21,0.6); animation: float1 4s ease-in-out infinite; }
+.main-well-card .oil-2 { width: 12px; height: 12px; background: rgba(59,130,246,0.5); animation: float2 5s ease-in-out infinite; }
+.main-well-card .oil-3 { width: 6px; height: 6px; background: rgba(168,85,247,0.55); animation: float3 3.5s ease-in-out infinite; }
+.main-well-card .oil-4 { width: 10px; height: 10px; background: rgba(34,211,238,0.5); animation: float4 4.5s ease-in-out infinite; }
+.main-well-card .oil-5 { width: 7px; height: 7px; background: rgba(248,113,113,0.5); animation: float1 3s ease-in-out infinite reverse; }
+.main-well-card .oil-6 { width: 14px; height: 14px; background: rgba(250,204,21,0.4); animation: float2 6s ease-in-out infinite reverse; }
+.main-well-card .oil-7 { width: 5px; height: 5px; background: rgba(59,130,246,0.6); animation: float3 4s ease-in-out infinite reverse; }
+.main-well-card .oil-8 { width: 9px; height: 9px; background: rgba(168,85,247,0.45); animation: float4 5.5s ease-in-out infinite; }
+.main-well-card .oil-9 { width: 11px; height: 11px; background: rgba(34,211,238,0.55); animation: float1 3.8s ease-in-out infinite; }
+.main-well-card .oil-10 { width: 6px; height: 6px; background: rgba(250,204,21,0.7); animation: float2 4.2s ease-in-out infinite reverse; }
+.main-well-card .oil-11 { width: 13px; height: 13px; background: rgba(248,113,113,0.4); animation: float3 5.2s ease-in-out infinite; }
+.main-well-card .oil-12 { width: 7px; height: 7px; background: rgba(59,130,246,0.65); animation: float4 3.3s ease-in-out infinite reverse; }
+.main-well-card .oil-13 { width: 8px; height: 8px; background: rgba(168,85,247,0.5); animation: float1 4.8s ease-in-out infinite reverse; }
+.main-well-card .oil-14 { width: 10px; height: 10px; background: rgba(250,204,21,0.45); animation: float2 3.7s ease-in-out infinite; }
+.main-well-card .oil-15 { width: 5px; height: 5px; background: rgba(34,211,238,0.6); animation: float3 5.8s ease-in-out infinite reverse; }
+.main-well-card .oil-16 { width: 12px; height: 12px; background: rgba(248,113,113,0.35); animation: float4 4.1s ease-in-out infinite; }
+.main-well-card .oil-17 { width: 9px; height: 9px; background: rgba(59,130,246,0.5); animation: float1 3.6s ease-in-out infinite; }
+.main-well-card .oil-18 { width: 6px; height: 6px; background: rgba(250,204,21,0.55); animation: float2 5.4s ease-in-out infinite reverse; }
+.main-well-card .oil-19 { width: 11px; height: 11px; background: rgba(168,85,247,0.4); animation: float3 4.4s ease-in-out infinite reverse; }
+.main-well-card .oil-20 { width: 7px; height: 7px; background: rgba(34,211,238,0.5); animation: float4 3.9s ease-in-out infinite; }
+
+/* حركة عشوائية متنوعة */
+@keyframes float1 {
+  0% { top: 10%; left: 5%; opacity: 0.3; }
+  25% { top: 70%; left: 80%; opacity: 0.7; }
+  50% { top: 30%; left: 40%; opacity: 0.5; }
+  75% { top: 85%; left: 15%; opacity: 0.6; }
+  100% { top: 10%; left: 5%; opacity: 0.3; }
+}
+
+@keyframes float2 {
+  0% { top: 80%; left: 10%; opacity: 0.4; }
+  25% { top: 15%; left: 70%; opacity: 0.6; }
+  50% { top: 60%; left: 30%; opacity: 0.3; }
+  75% { top: 20%; left: 90%; opacity: 0.7; }
+  100% { top: 80%; left: 10%; opacity: 0.4; }
+}
+
+@keyframes float3 {
+  0% { top: 50%; left: 90%; opacity: 0.5; }
+  25% { top: 10%; left: 20%; opacity: 0.3; }
+  50% { top: 75%; left: 60%; opacity: 0.7; }
+  75% { top: 40%; left: 5%; opacity: 0.4; }
+  100% { top: 50%; left: 90%; opacity: 0.5; }
+}
+
+@keyframes float4 {
+  0% { top: 20%; left: 50%; opacity: 0.3; }
+  25% { top: 90%; left: 10%; opacity: 0.6; }
+  50% { top: 5%; left: 85%; opacity: 0.4; }
+  75% { top: 45%; left: 70%; opacity: 0.7; }
+  100% { top: 20%; left: 50%; opacity: 0.3; }
+}
+
+/* النصوص فاتحة وواضحة */
+.main-well-card h2,
+.main-well-card h3,
+.main-well-card h4,
+.main-well-card p,
+.main-well-card span,
+.main-well-card a,
+.main-well-card li,
+.main-well-card label {
+  position: relative;
+  z-index: 10;
+  color: #f1f5f9 !important;
+}
     .well-icon {
+      
+      
       position: relative;
       z-index: 1;
     }
@@ -174,6 +284,8 @@
     }
 
     .level-badge {
+      
+      
       display: inline-block;
       background: linear-gradient(135deg, #2dd4bf, #0d9488);
       padding: 8px 25px;
@@ -234,6 +346,7 @@
     }
 
     .collect-btn {
+      margin-top: 8px; background: linear-gradient(145deg, #f8fafc, #e2e8f0) !important; border: none !important; box-shadow: inset 2px 2px 5px #ffffff, inset -2px -2px 5px #94a3b8, 3px 3px 8px rgba(0,0,0,0.1), -1px -1px 4px rgba(255,255,255,0.6) !important; border-radius: 30px !important; padding: 2px 2px 2px 10px !important; display: flex; align-items: center; color: #16a34a !important; font-weight: bold !important;
       background: linear-gradient(135deg, #2dd4bf, #0d9488);
       border: none;
       color: #0f172a;
@@ -254,11 +367,13 @@
     }
 
     .collect-btn:hover {
+      margin-top: 8px; background: linear-gradient(145deg, #f8fafc, #e2e8f0) !important; border: none !important; box-shadow: inset 2px 2px 5px #ffffff, inset -2px -2px 5px #94a3b8, 3px 3px 8px rgba(0,0,0,0.1), -1px -1px 4px rgba(255,255,255,0.6) !important; border-radius: 30px !important; padding: 2px 2px 2px 10px !important; display: flex; align-items: center; color: #16a34a !important; font-weight: bold !important;
       transform: translateY(-3px);
       box-shadow: 0 15px 40px rgba(45, 212, 191, 0.5);
     }
 
     .collect-btn:disabled {
+      margin-top: 8px; background: linear-gradient(145deg, #f8fafc, #e2e8f0) !important; border: none !important; box-shadow: inset 2px 2px 5px #ffffff, inset -2px -2px 5px #94a3b8, 3px 3px 8px rgba(0,0,0,0.1), -1px -1px 4px rgba(255,255,255,0.6) !important; border-radius: 30px !important; padding: 2px 2px 2px 10px !important; display: flex; align-items: center; color: #16a34a !important; font-weight: bold !important;
       opacity: 0.5;
       cursor: not-allowed;
       transform: none;
@@ -267,15 +382,18 @@
 
     /* بطاقات الترقية للبئر الأساسي */
     .upgrades-section {
+      
       margin-top: 25px;
     }
 
     .section-title {
+      
+      margin-top: 8px; background: linear-gradient(145deg, #f8fafc, #e2e8f0) !important; border: none !important; box-shadow: inset 2px 2px 5px #ffffff, inset -2px -2px 5px #94a3b8, 3px 3px 8px rgba(0,0,0,0.1), -1px -1px 4px rgba(255,255,255,0.6) !important; border-radius: 30px !important; padding: 2px 2px 2px 10px !important; display: flex; align-items: center; color: #16a34a !important; font-weight: bold !important;
       display: flex;
       align-items: center;
       gap: 10px;
       margin-bottom: 18px;
-      color: #f8fafc;
+      
       font-size: 18px;
       font-weight: 700;
     }
@@ -285,6 +403,7 @@
     }
 
     .upgrade-card {
+      margin-top: 8px; background: linear-gradient(145deg, #f8fafc, #e2e8f0) !important; border: none !important; box-shadow: inset 2px 2px 5px #ffffff, inset -2px -2px 5px #94a3b8, 3px 3px 8px rgba(0,0,0,0.1), -1px -1px 4px rgba(255,255,255,0.6) !important; border-radius: 30px !important; padding: 2px 2px 2px 10px !important; display: flex; align-items: center; color: #16a34a !important; font-weight: bold !important;
       background: linear-gradient(145deg, #1e3a5f, #0f3460);
       border-radius: 25px;
       padding: 18px;
@@ -303,6 +422,7 @@
     }
 
     .upgrade-card.purchased::after {
+      margin-top: 8px; background: linear-gradient(145deg, #f8fafc, #e2e8f0) !important; border: none !important; box-shadow: inset 2px 2px 5px #ffffff, inset -2px -2px 5px #94a3b8, 3px 3px 8px rgba(0,0,0,0.1), -1px -1px 4px rgba(255,255,255,0.6) !important; border-radius: 30px !important; padding: 2px 2px 2px 10px !important; display: flex; align-items: center; color: #16a34a !important; font-weight: bold !important;
       content: '✓';
       position: absolute;
       top: 10px;
@@ -319,6 +439,7 @@
     }
 
     .upgrade-icon {
+      margin-top: 8px; background: linear-gradient(145deg, #f8fafc, #e2e8f0) !important; border: none !important; box-shadow: inset 2px 2px 5px #ffffff, inset -2px -2px 5px #94a3b8, 3px 3px 8px rgba(0,0,0,0.1), -1px -1px 4px rgba(255,255,255,0.6) !important; border-radius: 30px !important; padding: 2px 2px 2px 10px !important; display: flex; align-items: center; color: #16a34a !important; font-weight: bold !important;
       width: 60px;
       height: 60px;
       border-radius: 20px;
@@ -332,10 +453,12 @@
     }
 
     .upgrade-info {
+      
       flex: 1;
     }
 
     .upgrade-name {
+      margin-top: 8px; background: linear-gradient(145deg, #f8fafc, #e2e8f0) !important; border: none !important; box-shadow: inset 2px 2px 5px #ffffff, inset -2px -2px 5px #94a3b8, 3px 3px 8px rgba(0,0,0,0.1), -1px -1px 4px rgba(255,255,255,0.6) !important; border-radius: 30px !important; padding: 2px 2px 2px 10px !important; display: flex; align-items: center; color: #16a34a !important; font-weight: bold !important;
       font-weight: 800;
       font-size: 16px;
       margin-bottom: 5px;
@@ -378,6 +501,7 @@
     }
 
     .buy-btn {
+      margin-top: 8px; background: linear-gradient(145deg, #f8fafc, #e2e8f0) !important; border: none !important; box-shadow: inset 2px 2px 5px #ffffff, inset -2px -2px 5px #94a3b8, 3px 3px 8px rgba(0,0,0,0.1), -1px -1px 4px rgba(255,255,255,0.6) !important; border-radius: 30px !important; padding: 2px 2px 2px 10px !important; display: flex; align-items: center; color: #16a34a !important; font-weight: bold !important;
       background: linear-gradient(135deg, #fbbf24, #d97706);
       border: none;
       color: #0f172a;
@@ -392,6 +516,7 @@
     }
 
     .buy-btn:hover {
+      margin-top: 8px; background: linear-gradient(145deg, #f8fafc, #e2e8f0) !important; border: none !important; box-shadow: inset 2px 2px 5px #ffffff, inset -2px -2px 5px #94a3b8, 3px 3px 8px rgba(0,0,0,0.1), -1px -1px 4px rgba(255,255,255,0.6) !important; border-radius: 30px !important; padding: 2px 2px 2px 10px !important; display: flex; align-items: center; color: #16a34a !important; font-weight: bold !important;
       transform: scale(1.02);
     }
 
@@ -409,6 +534,7 @@
 
     /* ملخص الآبار الإضافية */
     .extra-wells-summary {
+      
       background: linear-gradient(145deg, #1e3a5f, #0f3460);
       border-radius: 25px;
       padding: 20px;
@@ -440,6 +566,7 @@
 
     /* بطاقة بئر إضافي مملوك */
     .extra-well-card {
+      margin-top: 8px; background: linear-gradient(145deg, #f8fafc, #e2e8f0) !important; border: none !important; box-shadow: inset 2px 2px 5px #ffffff, inset -2px -2px 5px #94a3b8, 3px 3px 8px rgba(0,0,0,0.1), -1px -1px 4px rgba(255,255,255,0.6) !important; border-radius: 30px !important; padding: 2px 2px 2px 10px !important; display: flex; align-items: center; color: #16a34a !important; font-weight: bold !important;
       background: linear-gradient(145deg, #1e3a5f, #0f3460);
       border-radius: 20px;
       padding: 15px;
@@ -452,6 +579,7 @@
     }
 
     .extra-well-icon {
+      
       width: 55px;
       height: 55px;
       border-radius: 18px;
@@ -471,6 +599,7 @@
     }
 
     .extra-well-name {
+      margin-top: 8px; background: linear-gradient(145deg, #f8fafc, #e2e8f0) !important; border: none !important; box-shadow: inset 2px 2px 5px #ffffff, inset -2px -2px 5px #94a3b8, 3px 3px 8px rgba(0,0,0,0.1), -1px -1px 4px rgba(255,255,255,0.6) !important; border-radius: 30px !important; padding: 2px 2px 2px 10px !important; display: flex; align-items: center; color: #16a34a !important; font-weight: bold !important;
       font-weight: 800;
       font-size: 15px;
       margin-bottom: 5px;
@@ -481,17 +610,20 @@
     }
 
     .extra-well-desc {
+      margin-top: 8px; background: linear-gradient(145deg, #f8fafc, #e2e8f0) !important; border: none !important; box-shadow: inset 2px 2px 5px #ffffff, inset -2px -2px 5px #94a3b8, 3px 3px 8px rgba(0,0,0,0.1), -1px -1px 4px rgba(255,255,255,0.6) !important; border-radius: 30px !important; padding: 2px 2px 2px 10px !important; display: flex; align-items: center; color: #16a34a !important; font-weight: bold !important;
       font-size: 11px;
       color: #94a3b8;
       margin-bottom: 8px;
     }
 
     .extra-well-stats {
+      margin-top: 8px; background: linear-gradient(145deg, #f8fafc, #e2e8f0) !important; border: none !important; box-shadow: inset 2px 2px 5px #ffffff, inset -2px -2px 5px #94a3b8, 3px 3px 8px rgba(0,0,0,0.1), -1px -1px 4px rgba(255,255,255,0.6) !important; border-radius: 30px !important; padding: 2px 2px 2px 10px !important; display: flex; align-items: center; color: #16a34a !important; font-weight: bold !important;
       display: flex;
       gap: 15px;
     }
 
     .extra-well-stat {
+      margin-top: 8px; background: linear-gradient(145deg, #f8fafc, #e2e8f0) !important; border: none !important; box-shadow: inset 2px 2px 5px #ffffff, inset -2px -2px 5px #94a3b8, 3px 3px 8px rgba(0,0,0,0.1), -1px -1px 4px rgba(255,255,255,0.6) !important; border-radius: 30px !important; padding: 2px 2px 2px 10px !important; display: flex; align-items: center; color: #16a34a !important; font-weight: bold !important;
       display: flex;
       align-items: center;
       gap: 5px;
@@ -499,16 +631,19 @@
     }
 
     .extra-well-stat i {
+      margin-top: 8px; background: linear-gradient(145deg, #f8fafc, #e2e8f0) !important; border: none !important; box-shadow: inset 2px 2px 5px #ffffff, inset -2px -2px 5px #94a3b8, 3px 3px 8px rgba(0,0,0,0.1), -1px -1px 4px rgba(255,255,255,0.6) !important; border-radius: 30px !important; padding: 2px 2px 2px 10px !important; display: flex; align-items: center; color: #16a34a !important; font-weight: bold !important;
       color: #2dd4bf;
     }
 
     .well-expiry {
+      margin-top: 8px; background: linear-gradient(145deg, #f8fafc, #e2e8f0) !important; border: none !important; box-shadow: inset 2px 2px 5px #ffffff, inset -2px -2px 5px #94a3b8, 3px 3px 8px rgba(0,0,0,0.1), -1px -1px 4px rgba(255,255,255,0.6) !important; border-radius: 30px !important; padding: 2px 2px 2px 10px !important; display: flex; align-items: center; color: #16a34a !important; font-weight: bold !important;
       font-size: 10px;
       color: #fbbf24;
       margin-top: 5px;
     }
 
     .collect-extra-btn {
+      
       background: linear-gradient(135deg, #2dd4bf, #0d9488);
       border: none;
       color: #0f172a;
@@ -522,6 +657,7 @@
 
     /* أزرار المالك (تعديل/حذف) */
     .owner-actions {
+      
       position: absolute;
       top: 10px;
       right: 10px;
@@ -560,6 +696,7 @@
 
     /* قسم الآبار المتاحة للتطوير */
     .available-well-card {
+      
       background: linear-gradient(145deg, #1e3a5f, #0f3460);
       border-radius: 25px;
       padding: 18px;
@@ -569,6 +706,7 @@
     }
 
     .well-header {
+      margin-top: 8px; background: linear-gradient(145deg, #f8fafc, #e2e8f0) !important; border: none !important; box-shadow: inset 2px 2px 5px #ffffff, inset -2px -2px 5px #94a3b8, 3px 3px 8px rgba(0,0,0,0.1), -1px -1px 4px rgba(255,255,255,0.6) !important; border-radius: 30px !important; padding: 2px 2px 2px 10px !important; display: flex; align-items: center; color: #0284c7 !important; font-weight: bold !important;
       display: flex;
       align-items: center;
       gap: 15px;
@@ -591,6 +729,7 @@
     }
 
     .well-title {
+      
       flex: 1;
     }
 
@@ -613,6 +752,7 @@
     }
 
     .detail-item {
+      margin-top: 8px; background: linear-gradient(145deg, #f8fafc, #e2e8f0) !important; border: none !important; box-shadow: inset 2px 2px 5px #ffffff, inset -2px -2px 5px #94a3b8, 3px 3px 8px rgba(0,0,0,0.1), -1px -1px 4px rgba(255,255,255,0.6) !important; border-radius: 30px !important; padding: 2px 2px 2px 10px !important; display: flex; align-items: center; color: #0284c7 !important; font-weight: bold !important;
       background: rgba(0, 0, 0, 0.2);
       padding: 10px;
       border-radius: 15px;
@@ -620,6 +760,7 @@
     }
 
     .detail-value {
+      margin-top: 8px; background: linear-gradient(145deg, #f8fafc, #e2e8f0) !important; border: none !important; box-shadow: inset 2px 2px 5px #ffffff, inset -2px -2px 5px #94a3b8, 3px 3px 8px rgba(0,0,0,0.1), -1px -1px 4px rgba(255,255,255,0.6) !important; border-radius: 30px !important; padding: 2px 2px 2px 10px !important; display: flex; align-items: center; color: #0284c7 !important; font-weight: bold !important;
       font-weight: 800;
       font-size: 15px;
       color: #2dd4bf;
@@ -627,10 +768,12 @@
 
     .detail-label {
       font-size: 9px;
+      margin-top: 8px; background: linear-gradient(145deg, #f8fafc, #e2e8f0) !important; border: none !important; box-shadow: inset 2px 2px 5px #ffffff, inset -2px -2px 5px #94a3b8, 3px 3px 8px rgba(0,0,0,0.1), -1px -1px 4px rgba(255,255,255,0.6) !important; border-radius: 30px !important; padding: 2px 2px 2px 10px !important; display: flex; align-items: center; color: #0284c7 !important; font-weight: bold !important;
       color: #94a3b8;
     }
 
     .well-price-section {
+      margin-top: 8px; background: linear-gradient(145deg, #f8fafc, #e2e8f0) !important; border: none !important; box-shadow: inset 2px 2px 5px #ffffff, inset -2px -2px 5px #94a3b8, 3px 3px 8px rgba(0,0,0,0.1), -1px -1px 4px rgba(255,255,255,0.6) !important; border-radius: 30px !important; padding: 2px 2px 2px 10px !important; display: flex; align-items: center; color: #0284c7 !important; font-weight: bold !important;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -640,12 +783,14 @@
     }
 
     .price-tag {
+      margin-top: 8px; background: linear-gradient(145deg, #f8fafc, #e2e8f0) !important; border: none !important; box-shadow: inset 2px 2px 5px #ffffff, inset -2px -2px 5px #94a3b8, 3px 3px 8px rgba(0,0,0,0.1), -1px -1px 4px rgba(255,255,255,0.6) !important; border-radius: 30px !important; padding: 2px 2px 2px 10px !important; display: flex; align-items: center; color: #0284c7 !important; font-weight: bold !important;
       display: flex;
       align-items: center;
       gap: 8px;
     }
 
     .buy-well-btn {
+      margin-top: 8px; background: linear-gradient(145deg, #f8fafc, #e2e8f0) !important; border: none !important; box-shadow: inset 2px 2px 5px #ffffff, inset -2px -2px 5px #94a3b8, 3px 3px 8px rgba(0,0,0,0.1), -1px -1px 4px rgba(255,255,255,0.6) !important; border-radius: 30px !important; padding: 2px 2px 2px 10px !important; display: flex; align-items: center; color: #0284c7 !important; font-weight: bold !important;
       background: linear-gradient(135deg, #fbbf24, #d97706);
       border: none;
       color: #0f172a;
@@ -661,17 +806,20 @@
     }
 
     .buy-well-btn:hover {
+      margin-top: 8px; background: linear-gradient(145deg, #f8fafc, #e2e8f0) !important; border: none !important; box-shadow: inset 2px 2px 5px #ffffff, inset -2px -2px 5px #94a3b8, 3px 3px 8px rgba(0,0,0,0.1), -1px -1px 4px rgba(255,255,255,0.6) !important; border-radius: 30px !important; padding: 2px 2px 2px 10px !important; display: flex; align-items: center; color: #0284c7 !important; font-weight: bold !important;
       transform: translateY(-2px);
       box-shadow: 0 10px 25px rgba(251, 191, 36, 0.3);
     }
 
     .buy-well-btn:disabled {
+      margin-top: 8px; background: linear-gradient(145deg, #f8fafc, #e2e8f0) !important; border: none !important; box-shadow: inset 2px 2px 5px #ffffff, inset -2px -2px 5px #94a3b8, 3px 3px 8px rgba(0,0,0,0.1), -1px -1px 4px rgba(255,255,255,0.6) !important; border-radius: 30px !important; padding: 2px 2px 2px 10px !important; display: flex; align-items: center; color: #0284c7 !important; font-weight: bold !important;
       opacity: 0.5;
       cursor: not-allowed;
       transform: none;
     }
 
     .owned-badge {
+      margin-top: 8px; background: linear-gradient(145deg, #f8fafc, #e2e8f0) !important; border: none !important; box-shadow: inset 2px 2px 5px #ffffff, inset -2px -2px 5px #94a3b8, 3px 3px 8px rgba(0,0,0,0.1), -1px -1px 4px rgba(255,255,255,0.6) !important; border-radius: 30px !important; padding: 2px 2px 2px 10px !important; display: flex; align-items: center; color: #0284c7 !important; font-weight: bold !important;
       background: #10b981;
       color: white;
       padding: 8px 20px;
@@ -685,6 +833,7 @@
 
     /* مودال */
     .modal-overlay {
+      margin-top: 8px; background: linear-gradient(145deg, #f8fafc, #e2e8f0) !important; border: none !important; box-shadow: inset 2px 2px 5px #ffffff, inset -2px -2px 5px #94a3b8, 3px 3px 8px rgba(0,0,0,0.1), -1px -1px 4px rgba(255,255,255,0.6) !important; border-radius: 30px !important; padding: 2px 2px 2px 10px !important; display: flex; align-items: center; color: #0284c7 !important; font-weight: bold !important;
       position: fixed;
       top: 0;
       left: 0;
@@ -711,6 +860,7 @@
     }
 
     .modal-header {
+      margin-top: 8px; background: linear-gradient(145deg, #f8fafc, #e2e8f0) !important; border: none !important; box-shadow: inset 2px 2px 5px #ffffff, inset -2px -2px 5px #94a3b8, 3px 3px 8px rgba(0,0,0,0.1), -1px -1px 4px rgba(255,255,255,0.6) !important; border-radius: 30px !important; padding: 2px 2px 2px 10px !important; display: flex; align-items: center; color: #0284c7 !important; font-weight: bold !important;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -788,6 +938,7 @@
 
     /* سجل الإنتاج */
     .history-section {
+
       margin-top: 30px;
       padding-bottom: 30px;
     }
@@ -810,6 +961,7 @@
     }
 
     .history-icon {
+      margin-top: 8px; background: linear-gradient(145deg, #f8fafc, #e2e8f0) !important; border: none !important; box-shadow: inset 2px 2px 5px #ffffff, inset -2px -2px 5px #94a3b8, 3px 3px 8px rgba(0,0,0,0.1), -1px -1px 4px rgba(255,255,255,0.6) !important; border-radius: 30px !important; padding: 2px 2px 2px 10px !important; display: flex; align-items: center; color: #0284c7 !important; font-weight: bold !important;
       width: 40px;
       height: 40px;
       border-radius: 15px;
@@ -821,6 +973,7 @@
     }
 
     .history-details .history-title {
+      margin-top: 8px; background: linear-gradient(145deg, #f8fafc, #e2e8f0) !important; border: none !important; box-shadow: inset 2px 2px 5px #ffffff, inset -2px -2px 5px #94a3b8, 3px 3px 8px rgba(0,0,0,0.1), -1px -1px 4px rgba(255,255,255,0.6) !important; border-radius: 30px !important; padding: 2px 2px 2px 10px !important; display: flex; align-items: center; color: #0284c7 !important; font-weight: bold !important;
       font-weight: 600;
       margin-bottom: 3px;
     }
@@ -831,6 +984,7 @@
     }
 
     .history-amount {
+      margin-top: 8px; background: linear-gradient(145deg, #f8fafc, #e2e8f0) !important; border: none !important; box-shadow: inset 2px 2px 5px #ffffff, inset -2px -2px 5px #94a3b8, 3px 3px 8px rgba(0,0,0,0.1), -1px -1px 4px rgba(255,255,255,0.6) !important; border-radius: 30px !important; padding: 2px 2px 2px 10px !important; display: flex; align-items: center; color: #0284c7 !important; font-weight: bold !important;
       font-weight: 800;
       color: #2dd4bf;
       font-size: 18px;
@@ -1013,13 +1167,14 @@
   import { getFirestore, doc, getDoc, setDoc, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js";
 
   const firebaseConfig = {
-    apiKey: "AIzaSyDYKCCTcurNcJslrNKqdiJCoIIK-YZArB4",
-    authDomain: "sbaq-fc46f.firebaseapp.com",
-    projectId: "sbaq-fc46f",
-    storageBucket: "sbaq-fc46f.firebasestorage.app",
-    appId: "1:1026865750415:web:0ee39a717bcafaa0d06bfa"
-  };
-
+  apiKey: "AIzaSyCPBrZMo6IYCwCDYV3HEfNcUmLUITR6VRc",
+  authDomain: "elahbes.firebaseapp.com",
+  projectId: "elahbes",
+  storageBucket: "elahbes.firebasestorage.app",
+  messagingSenderId: "800207969145",
+  appId: "1:800207969145:web:aa19b725d1c92dd48fada8",
+  measurementId: "G-EFT566SJMP"
+};
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db = getFirestore(app);
