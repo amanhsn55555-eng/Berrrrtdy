@@ -38,7 +38,7 @@
       border-bottom: 2px solid #2dd4bf;
       display: flex;
       align-items: center;
-      justify-content: center;
+      justify-content: space-between;
     }
 
     .oil-header h2 {
@@ -53,6 +53,18 @@
     .oil-header h2 i {
       color: #2dd4bf;
       font-size: 22px;
+    }
+
+    .referral-badge {
+      background: linear-gradient(135deg, #8b5cf6, #6366f1);
+      color: white;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
 
     /* ========== عرض الموارد ========== */
@@ -203,6 +215,24 @@
     .timer-label {
       color: #94a3b8;
       font-size: 12px;
+    }
+
+    .referral-cut-info {
+      background: rgba(139, 92, 246, 0.15);
+      border-radius: 15px;
+      padding: 12px 15px;
+      margin: 12px 0;
+      border: 1px solid rgba(139, 92, 246, 0.3);
+      font-size: 13px;
+      color: #c4b5fd;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .referral-cut-info i {
+      color: #8b5cf6;
+      font-size: 18px;
     }
 
     .collect-btn {
@@ -402,7 +432,7 @@
       margin-top: 5px;
     }
 
-    /* بطاقة بئر إضافي مملوك */
+    /* بطاقة بئر إضافي */
     .extra-well-card {
       background: linear-gradient(145deg, #1e3a5f, #0f3460);
       border-radius: 20px;
@@ -474,21 +504,15 @@
       margin-top: 8px;
     }
 
-    .collect-extra-btn {
-      background: linear-gradient(135deg, #2dd4bf, #0d9488);
-      border: none;
-      color: #0f172a;
-      padding: 10px 18px;
-      border-radius: 20px;
+    .expired-badge {
+      background: #ef4444;
+      color: white;
+      padding: 4px 12px;
+      border-radius: 15px;
+      font-size: 10px;
       font-weight: 700;
-      font-size: 11px;
-      cursor: pointer;
+      display: inline-block;
       margin-top: 8px;
-      transition: all 0.2s;
-    }
-
-    .collect-extra-btn:active {
-      transform: scale(0.95);
     }
 
     /* أزرار المالك */
@@ -640,7 +664,6 @@
       cursor: not-allowed;
     }
 
-  .oil-header { display: none !important; } .resources-bar { top: 0 !important; } .oil-container { margin-top: 65px !important; }
     .publisher-badge {
       background: #8b5cf6;
       color: white;
@@ -818,6 +841,13 @@
       font-weight: 800;
       color: #2dd4bf;
       font-size: 18px;
+      text-align: left;
+    }
+
+    .history-cut {
+      font-size: 10px;
+      color: #8b5cf6;
+      margin-top: 2px;
     }
 
     /* حالة فارغة */
@@ -908,6 +938,10 @@
 <!-- هيدر -->
 <div class="oil-header">
   <h2><i class="fas fa-oil-well"></i> بئر النفط</h2>
+  <div class="referral-badge" id="referralBadge" style="display:none;">
+    <i class="fas fa-link"></i>
+    <span id="referralInfo"></span>
+  </div>
 </div>
 
 <!-- شريط الموارد -->
@@ -996,9 +1030,11 @@
   const WELL_LEVELS = {
     0: { name: 'بئر صغير', production: 10, upgradeCost: 0 },
     1: { name: 'بئر متوسط', production: 50, upgradeCost: 100000 },
-    2: { name: 'بئر كبير', production: 10, upgradeCost: 1500000 },
-    3: { name: 'بئر عملاق', production: 50, upgradeCost: 5000000 }
+    2: { name: 'بئر كبير', production: 100, upgradeCost: 1500000 },
+    3: { name: 'بئر عملاق', production: 500, upgradeCost: 5000000 }
   };
+
+  const REFERRAL_CUT_PERCENT = 1; // 1% خصم للإحالة
 
   let currentUser = null;
   let resources = { gold: 10000, oil: 0 };
@@ -1009,6 +1045,7 @@
   };
   let extraWells = [];
   let availableWells = [];
+  let referrerId = null; // معرف المُحيل
   let timerInterval = null;
 
   function showToast(msg, isSuccess = true) {
@@ -1045,6 +1082,35 @@
     return WELL_LEVELS[mainWellData.level]?.production || 10;
   }
 
+  // حساب إجمالي الإنتاج اليومي (البئر الأساسي + الآبار الإضافية السارية)
+  function getTotalDailyProduction() {
+    let total = getMainWellProduction();
+    const now = Date.now();
+    
+    extraWells.forEach(well => {
+      // فقط الآبار التي لم تنتهِ مدتها
+      if (!well.expiresAt || well.expiresAt > now) {
+        total += well.dailyOil;
+      }
+    });
+    
+    return total;
+  }
+
+  // حساب إجمالي الإنتاج اليومي من الآبار الإضافية فقط
+  function getExtraWellsDailyProduction() {
+    let total = 0;
+    const now = Date.now();
+    
+    extraWells.forEach(well => {
+      if (!well.expiresAt || well.expiresAt > now) {
+        total += well.dailyOil;
+      }
+    });
+    
+    return total;
+  }
+
   function calculateTotalProfit(well) {
     const daysInMonth = 30;
     const totalDays = well.durationMonths * daysInMonth;
@@ -1056,15 +1122,126 @@
     let totalDaily = 0;
     let totalInvested = 0;
     let totalExpected = 0;
+    const now = Date.now();
     
     extraWells.forEach(well => {
-      totalDaily += well.dailyOil;
-      totalInvested += well.goldPrice;
-      const { totalOil } = calculateTotalProfit(well);
-      totalExpected += totalOil;
+      if (!well.expiresAt || well.expiresAt > now) {
+        totalDaily += well.dailyOil;
+        totalInvested += well.goldPrice;
+        const { totalOil } = calculateTotalProfit(well);
+        totalExpected += totalOil;
+      }
     });
     
     return { totalDaily, totalInvested, totalExpected };
+  }
+
+  // الحصول على معرف المُحيل من الرابط أو التخزين المحلي
+  function getReferrerFromURL() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const ref = urlParams.get('ref');
+    if (ref) {
+      localStorage.setItem('referrerId', ref);
+      return ref;
+    }
+    return localStorage.getItem('referrerId') || null;
+  }
+
+  // حفظ بيانات الإحالة للمستخدم
+  async function saveReferralData(uid) {
+    const refId = getReferrerFromURL();
+    
+    if (refId && refId !== uid) {
+      referrerId = refId;
+      
+      try {
+        // حفظ في بيانات المستخدم
+        await updateDoc(doc(db, "users", uid), {
+          referrerId: refId,
+          referredAt: Date.now()
+        });
+        
+        // إضافة هذا المستخدم إلى قائمة المُحالين لدى المُحيل
+        const referrerRef = doc(db, "users", refId);
+        const referrerDoc = await getDoc(referrerRef);
+        
+        if (referrerDoc.exists()) {
+          const referrals = referrerDoc.data().referrals || [];
+          if (!referrals.includes(uid)) {
+            referrals.push(uid);
+            await updateDoc(referrerRef, {
+              referrals: referrals,
+              totalReferralOil: (referrerDoc.data().totalReferralOil || 0)
+            });
+          }
+        }
+        
+        // عرض شارة الإحالة
+        document.getElementById('referralBadge').style.display = 'flex';
+        document.getElementById('referralInfo').textContent = 'مسجل عبر إحالة';
+        
+        console.log('✅ تم تسجيل الإحالة:', refId, '->', uid);
+      } catch (error) {
+        console.error('خطأ في حفظ الإحالة:', error);
+      }
+    }
+  }
+
+  // تحميل معرف المُحيل من قاعدة البيانات
+  async function loadReferralData(uid) {
+    try {
+      const userDoc = await getDoc(doc(db, "users", uid));
+      if (userDoc.exists()) {
+        const data = userDoc.data();
+        if (data.referrerId) {
+          referrerId = data.referrerId;
+          document.getElementById('referralBadge').style.display = 'flex';
+          document.getElementById('referralInfo').textContent = 'مسجل عبر إحالة';
+        }
+      }
+    } catch (error) {
+      console.error('خطأ في تحميل بيانات الإحالة:', error);
+    }
+  }
+
+  // إرسال نسبة الإحالة للمُحيل
+  async function sendReferralCut(collectionAmount) {
+    if (!referrerId || !currentUser) return 0;
+    
+    const cutAmount = Math.floor(collectionAmount * REFERRAL_CUT_PERCENT / 100);
+    if (cutAmount <= 0) return 0;
+    
+    try {
+      // الحصول على بيانات المُحيل
+      const referrerResourcesRef = doc(db, "resources", referrerId);
+      const referrerDoc = await getDoc(referrerResourcesRef);
+      
+      if (referrerDoc.exists()) {
+        const referrerOil = (referrerDoc.data().oil || 0) + cutAmount;
+        const referrerReferralOil = (referrerDoc.data().referralOil || 0) + cutAmount;
+        
+        await updateDoc(referrerResourcesRef, {
+          oil: referrerOil,
+          referralOil: referrerReferralOil
+        });
+        
+        // تحديث إجمالي أرباح الإحالة
+        const referrerUserRef = doc(db, "users", referrerId);
+        const referrerUserDoc = await getDoc(referrerUserRef);
+        if (referrerUserDoc.exists()) {
+          await updateDoc(referrerUserRef, {
+            totalReferralOil: (referrerUserDoc.data().totalReferralOil || 0) + cutAmount
+          });
+        }
+        
+        console.log(`✅ تم تحويل ${cutAmount} نفط للمُحيل ${referrerId}`);
+        return cutAmount;
+      }
+    } catch (error) {
+      console.error('خطأ في إرسال نسبة الإحالة:', error);
+    }
+    
+    return 0;
   }
 
   async function loadAvailableWells() {
@@ -1084,6 +1261,9 @@
 
   async function loadUserData(uid) {
     try {
+      // تحميل بيانات الإحالة أولاً
+      await loadReferralData(uid);
+      
       const resourcesDoc = await getDoc(doc(db, "resources", uid));
       if (resourcesDoc.exists()) {
         resources = resourcesDoc.data();
@@ -1145,42 +1325,108 @@
     }, 1000);
   }
 
-  window.collectMainWell = async function() {
+  // ========== تجميع موحد للبئر الأساسي + جميع الآبار الإضافية ==========
+  window.collectAllWells = async function() {
     const { canCollect } = getTimeUntilNextCollection();
     if (!canCollect) {
       showToast('لم يحن وقت التجميع بعد', false);
       return;
     }
     
-    const production = getMainWellProduction();
+    const now = Date.now();
+    
+    // 1️⃣ حساب إنتاج البئر الأساسي
+    const mainProduction = getMainWellProduction();
+    
+    // 2️⃣ حساب إنتاج الآبار الإضافية السارية
+    let extraProduction = 0;
+    const updatedExtraWells = [];
+    
+    for (const well of extraWells) {
+      // تجاهل الآبار المنتهية
+      if (well.expiresAt && well.expiresAt <= now) {
+        updatedExtraWells.push(well); // نحتفظ بها لكن لا نضيف إنتاجها
+        continue;
+      }
+      
+      const lastCollection = well.lastCollection || well.purchasedAt || now;
+      const daysPassed = Math.floor((now - lastCollection) / (24 * 60 * 60 * 1000));
+      
+      if (daysPassed >= 1) {
+        // الحد الأقصى 30 يوم تجميع
+        const collectDays = Math.min(daysPassed, 30);
+        const wellProduction = collectDays * well.dailyOil;
+        extraProduction += wellProduction;
+        
+        // تحديث وقت آخر تجميع
+        updatedExtraWells.push({
+          ...well,
+          lastCollection: now
+        });
+      } else {
+        updatedExtraWells.push(well);
+      }
+    }
+    
+    const totalCollection = mainProduction + extraProduction;
+    
+    if (totalCollection <= 0) {
+      showToast('لا يوجد نفط للتجميع حالياً', false);
+      return;
+    }
     
     try {
-      const newOil = (resources.oil || 0) + production;
+      // 3️⃣ حساب نسبة الإحالة (1%)
+      const referralCut = await sendReferralCut(totalCollection);
+      const netOil = totalCollection - referralCut;
+      
+      // 4️⃣ تحديث رصيد المستخدم
+      const newOil = (resources.oil || 0) + netOil;
       
       await updateDoc(doc(db, "resources", currentUser.uid), {
         oil: newOil
       });
       
+      // 5️⃣ تحديث سجل التجميع
       const historyEntry = {
-        amount: production,
+        amount: netOil,
+        totalCollected: totalCollection,
+        referralCut: referralCut,
+        mainProduction: mainProduction,
+        extraProduction: extraProduction,
+        extraWellsCount: extraWells.filter(w => !w.expiresAt || w.expiresAt > now).length,
         level: mainWellData.level,
-        timestamp: Date.now()
+        timestamp: now
       };
       
       await updateDoc(doc(db, "oil_wells", currentUser.uid), {
-        lastCollection: Date.now(),
+        lastCollection: now,
         collectionHistory: arrayUnion(historyEntry)
       });
       
+      // 6️⃣ تحديث الآبار الإضافية
+      await updateDoc(doc(db, "extra_wells", currentUser.uid), {
+        wells: updatedExtraWells
+      });
+      
+      // 7️⃣ تحديث المتغيرات المحلية
       resources.oil = newOil;
-      mainWellData.lastCollection = Date.now();
+      mainWellData.lastCollection = now;
       mainWellData.collectionHistory = [...(mainWellData.collectionHistory || []), historyEntry];
+      extraWells = updatedExtraWells;
       
       updateResourcesDisplay();
       renderPage();
       startTimer();
       
-      showToast(`تم تجميع ${production} نفط من البئر الأساسي!`, true);
+      let msg = `✅ تم تجميع ${formatNumber(netOil)} نفط`;
+      if (extraProduction > 0) {
+        msg += ` (الأساسي: ${mainProduction} + الإضافي: ${extraProduction})`;
+      }
+      if (referralCut > 0) {
+        msg += ` | تم خصم ${formatNumber(referralCut)} نفط (${REFERRAL_CUT_PERCENT}%) للإحالة`;
+      }
+      showToast(msg, true);
       
     } catch (error) {
       console.error("خطأ في التجميع:", error);
@@ -1373,7 +1619,7 @@
       renderPage();
       
       const { totalOil } = calculateTotalProfit(well);
-      showToast(`تم شراء ${well.name} بنجاح! سينتج ${formatNumber(totalOil)} نفط خلال ${well.durationMonths} شهر`, true);
+      showToast(`تم شراء ${well.name} بنجاح! يضاف إنتاجه للتجميع الموحد`, true);
       
     } catch (error) {
       console.error("خطأ في الشراء:", error);
@@ -1381,48 +1627,6 @@
     }
   };
 
-  window.collectExtraWell = async function(wellId) {
-    const wellIndex = extraWells.findIndex(w => w.id === wellId);
-    if (wellIndex === -1) return;
-    
-    const well = extraWells[wellIndex];
-    const now = Date.now();
-    const lastCollection = well.lastCollection || well.purchasedAt;
-    const daysPassed = Math.floor((now - lastCollection) / (24 * 60 * 60 * 1000));
-    
-    if (daysPassed < 1) {
-      showToast('لم يحن وقت التجميع بعد (يجب مرور يوم كامل)', false);
-      return;
-    }
-    
-    const maxDays = 30;
-    const collectAmount = Math.min(daysPassed, maxDays) * well.dailyOil;
-    
-    try {
-      const newOil = (resources.oil || 0) + collectAmount;
-      await updateDoc(doc(db, "resources", currentUser.uid), {
-        oil: newOil
-      });
-      
-      extraWells[wellIndex].lastCollection = now;
-      
-      await updateDoc(doc(db, "extra_wells", currentUser.uid), {
-        wells: extraWells
-      });
-      
-      resources.oil = newOil;
-      updateResourcesDisplay();
-      renderPage();
-      
-      showToast(`تم تجميع ${formatNumber(collectAmount)} نفط من ${well.name}!`, true);
-      
-    } catch (error) {
-      console.error("خطأ في التجميع:", error);
-      showToast('فشل التجميع', false);
-    }
-  };
-
-  
   function renderPage() {
     const container = document.getElementById('oilContainer');
     if (!container) return;
@@ -1430,18 +1634,19 @@
     const mainLevel = mainWellData.level || 0;
     const levelInfo = WELL_LEVELS[mainLevel];
     const mainProduction = getMainWellProduction();
+    const extraDailyProduction = getExtraWellsDailyProduction();
+    const totalDailyProduction = getTotalDailyProduction();
     const { remaining, canCollect } = getTimeUntilNextCollection();
     const history = mainWellData.collectionHistory || [];
     const extraStats = calculateExtraWellsStats();
     
+    const now = Date.now();
     const ownedIds = extraWells.map(w => w.id);
     const availableToShow = availableWells.filter(w => !ownedIds.includes(w.id));
     
     const particles = Array.from({ length: 12 }, (_, i) => `
       <div class="particle" style="left: ${Math.random() * 100}%; top: ${Math.random() * 100}%; animation-delay: ${Math.random() * 6}s; animation-duration: ${5 + Math.random() * 5}s;"></div>
     `).join('');
-    
-    const totalDailyProduction = mainProduction + extraStats.totalDaily;
     
     container.innerHTML = `
       <div class="main-well-card">
@@ -1460,26 +1665,31 @@
         <div class="production-info">
           <div class="production-rate">
             <i class="fas fa-oil-can"></i>
-            <span>${mainProduction}</span>
+            <span>${formatNumber(totalDailyProduction)}</span>
           </div>
-          <div class="production-label">إنتاج يومي (البئر الأساسي)</div>
+          <div class="production-label">إجمالي الإنتاج اليومي</div>
+          
+          <div style="display:flex; justify-content:center; gap:20px; margin-top:12px; font-size:13px; color:#94a3b8;">
+            <span>🏭 الأساسي: ${mainProduction}</span>
+            ${extraDailyProduction > 0 ? `<span>🛢️ الإضافي: +${extraDailyProduction}</span>` : ''}
+          </div>
         </div>
         
-        ${extraWells.length > 0 ? `
-          <div style="margin:10px 0; padding:12px; background:rgba(45,212,191,0.1); border-radius:15px;">
-            <div style="font-size:13px; color:#94a3b8;">+ ${formatNumber(extraStats.totalDaily)} نفط/يوم من الآبار الإضافية</div>
-            <div style="font-size:18px; font-weight:800; color:#2dd4bf;">الإجمالي: ${formatNumber(totalDailyProduction)} نفط/يوم</div>
+        ${referrerId ? `
+          <div class="referral-cut-info">
+            <i class="fas fa-link"></i>
+            <span>يتم خصم ${REFERRAL_CUT_PERCENT}% من كل تجميع وتحويلها للمُحيل تلقائياً</span>
           </div>
         ` : ''}
         
         <div class="next-collection">
           <div class="timer" id="collectionTimer">${formatTime(remaining)}</div>
-          <div class="timer-label">متبقي حتى التجميع القادم</div>
+          <div class="timer-label">متبقي حتى التجميع القادم (موحد لجميع الآبار)</div>
         </div>
         
-        <button class="collect-btn" id="collectMainBtn" onclick="collectMainWell()" ${!canCollect ? 'disabled' : ''}>
+        <button class="collect-btn" id="collectMainBtn" onclick="collectAllWells()" ${!canCollect ? 'disabled' : ''}>
           <i class="fas fa-hand-holding"></i>
-          ${canCollect ? `تجميع ${mainProduction} نفط` : 'غير متاح للتجميع'}
+          ${canCollect ? `تجميع ${formatNumber(totalDailyProduction)} نفط` : 'غير متاح للتجميع'}
         </button>
       </div>
       
@@ -1496,20 +1706,20 @@
         <div class="extra-wells-summary">
           <div class="section-title" style="margin-bottom:15px;">
             <i class="fas fa-oil-can"></i>
-            <span>الآبار المطورة</span>
+            <span>الآبار المطورة (يضاف إنتاجها للتجميع الموحد)</span>
           </div>
           <div class="summary-stats">
             <div class="stat-item">
-              <div class="stat-value">${formatNumber(extraWells.length)}</div>
-              <div class="stat-label">بئر إضافي</div>
+              <div class="stat-value">${formatNumber(extraWells.filter(w => !w.expiresAt || w.expiresAt > now).length)}</div>
+              <div class="stat-label">بئر نشط</div>
             </div>
             <div class="stat-item">
               <div class="stat-value">${formatNumber(extraStats.totalDaily)}</div>
-              <div class="stat-label">إنتاج يومي</div>
+              <div class="stat-label">إنتاج يومي إضافي</div>
             </div>
             <div class="stat-item">
-              <div class="stat-value">${formatNumber(extraStats.totalExpected)}</div>
-              <div class="stat-label">إجمالي متوقع</div>
+              <div class="stat-value">${formatNumber(totalDailyProduction)}</div>
+              <div class="stat-label">الإجمالي اليومي</div>
             </div>
           </div>
         </div>
@@ -1548,11 +1758,15 @@
                 <i class="fas fa-oil-can"></i>
               </div>
               <div class="history-details">
-                <div class="history-title">${WELL_LEVELS[item.level]?.name || 'بئر'}</div>
+                <div class="history-title">${WELL_LEVELS[item.level]?.name || 'بئر'} ${item.extraProduction > 0 ? `(+${item.extraProduction} إضافي)` : ''}</div>
                 <div class="history-time">${new Date(item.timestamp).toLocaleString('ar-SA')}</div>
+                ${item.referralCut > 0 ? `<div class="history-cut">🔗 خصم إحالة: -${formatNumber(item.referralCut)}</div>` : ''}
               </div>
             </div>
-            <div class="history-amount">+${formatNumber(item.amount)} 🛢️</div>
+            <div>
+              <div class="history-amount">+${formatNumber(item.amount)} 🛢️</div>
+              ${item.referralCut > 0 ? `<div style="font-size:10px; color:#8b5cf6;">الإجمالي: ${formatNumber(item.totalCollected)}</div>` : ''}
+            </div>
           </div>
         `).join('') : `
           <div class="empty-state">
@@ -1610,22 +1824,19 @@
   function renderExtraWellCard(well) {
     const { totalOil } = calculateTotalProfit(well);
     const now = Date.now();
+    const isExpired = well.expiresAt && well.expiresAt <= now;
     const remainingTime = well.expiresAt ? Math.max(0, well.expiresAt - now) : 0;
     const remainingDays = Math.ceil(remainingTime / (24 * 60 * 60 * 1000));
-    const lastCollection = well.lastCollection || well.purchasedAt;
-    const daysSinceLastCollection = Math.floor((now - lastCollection) / (24 * 60 * 60 * 1000));
-    const canCollect = daysSinceLastCollection >= 1;
-    const collectAmount = Math.min(daysSinceLastCollection, 30) * well.dailyOil;
     
     return `
-      <div class="extra-well-card">
+      <div class="extra-well-card" style="${isExpired ? 'opacity:0.5;' : ''}">
         <div class="extra-well-icon" style="background-image: url('${well.image}');">
           ${!well.image ? '<i class="fas fa-oil-well"></i>' : ''}
         </div>
         <div class="extra-well-info">
           <div class="extra-well-name">
             ${well.name}
-            ${canCollect ? '<span style="color:#10b981; font-size:10px;"><i class="fas fa-circle"></i> جاهز</span>' : ''}
+            ${isExpired ? '<span class="expired-badge">منتهي</span>' : '<span style="color:#10b981; font-size:10px;"><i class="fas fa-check-circle"></i> نشط</span>'}
           </div>
           <div class="extra-well-desc">${well.description || ''}</div>
           <div class="extra-well-stats">
@@ -1640,24 +1851,17 @@
           </div>
           <div class="well-expiry">
             <i class="fas fa-hourglass-half"></i>
-            متبقي: ${remainingDays} يوم | إجمالي: ${formatNumber(totalOil)} نفط
+            ${isExpired ? 'انتهت المدة' : `متبقي: ${remainingDays} يوم | إجمالي: ${formatNumber(totalOil)} نفط`}
           </div>
-          ${canCollect ? `
-            <button class="collect-extra-btn" onclick="collectExtraWell('${well.id}')">
-              <i class="fas fa-hand-holding"></i> تجميع ${formatNumber(collectAmount)} نفط
-            </button>
-          ` : `
-            <div style="margin-top:8px; font-size:10px; color:#64748b;">
-              <i class="fas fa-clock"></i> متاح بعد ${24 - Math.floor((now - lastCollection) / (60 * 60 * 1000))} ساعة
-            </div>
-          `}
+          <div style="margin-top:6px; font-size:10px; color:#2dd4bf;">
+            <i class="fas fa-link"></i> يضاف إنتاجه تلقائياً للتجميع الموحد
+          </div>
         </div>
       </div>
     `;
   }
 
   function renderAvailableWellCard(well) {
-    
     const { totalOil } = calculateTotalProfit(well);
     const canAfford = resources.gold >= well.goldPrice;
     const isWellOwner = currentUser && well.ownerId === currentUser.uid;
@@ -1720,6 +1924,8 @@
   onAuthStateChanged(auth, async (user) => {
     if (user) {
       currentUser = user;
+      // حفظ بيانات الإحالة إذا كان قادماً من رابط إحالة
+      await saveReferralData(user.uid);
       await loadUserData(user.uid);
     } else {
       const container = document.getElementById('oilContainer');
