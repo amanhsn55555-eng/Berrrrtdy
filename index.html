@@ -1943,6 +1943,146 @@
   window.addEventListener('beforeunload', () => {
     if (timerInterval) clearInterval(timerInterval);
   });
+  // ========== تخزين واسترجاع بيانات بئر النفط ==========
+// آمن 100% - لا يعدل أي دالة - فقط يحفظ ويسترجع
+
+// استرجاع سريع للبيانات المخزنة عند فتح الصفحة
+(function() {
+    try {
+        var savedData = localStorage.getItem('oil_well_data');
+        var savedTime = localStorage.getItem('oil_well_time');
+        
+        if (savedData && savedTime) {
+            var age = Date.now() - parseInt(savedTime);
+            if (age < 86400000) { // 24 ساعة
+                var data = JSON.parse(savedData);
+                
+                // عرض البيانات فوراً
+                if (data.resources) {
+                    document.getElementById('goldDisplay').textContent = (data.resources.gold || 0).toLocaleString('ar-SA');
+                    document.getElementById('oilDisplay').textContent = (data.resources.oil || 0).toLocaleString('ar-SA');
+                }
+                
+                if (data.referrerId) {
+                    document.getElementById('referralBadge').style.display = 'flex';
+                    document.getElementById('referralInfo').textContent = 'مسجل عبر إحالة';
+                }
+                
+                // عرض شاشة سريعة
+                var container = document.getElementById('oilContainer');
+                if (container && data.mainWellData) {
+                    var mw = data.mainWellData;
+                    var lvl = mw.level || 0;
+                    var levelNames = {0: 'بئر صغير', 1: 'بئر متوسط', 2: 'بئر كبير', 3: 'بئر عملاق'};
+                    var productions = {0: 10, 1: 50, 2: 100, 3: 500};
+                    var production = productions[lvl] || 10;
+                    
+                    // حساب الوقت المتبقي
+                    var now = Date.now();
+                    var lastCollection = mw.lastCollection || now;
+                    var elapsed = Math.floor((now - lastCollection) / 1000);
+                    var remaining = Math.max(0, 86400 - elapsed);
+                    var canCollect = remaining === 0;
+                    
+                    var h = Math.floor(remaining / 3600);
+                    var m = Math.floor((remaining % 3600) / 60);
+                    var s = remaining % 60;
+                    var timeStr = h.toString().padStart(2, '0') + ':' + m.toString().padStart(2, '0') + ':' + s.toString().padStart(2, '0');
+                    
+                    container.innerHTML = 
+                        '<div class="main-well-card">' +
+                            '<div class="well-icon"><i class="fas fa-oil-well"></i></div>' +
+                            '<div class="well-level"><span class="level-badge"><i class="fas fa-tachometer-alt"></i> ' + levelNames[lvl] + '</span></div>' +
+                            '<div class="production-info">' +
+                                '<div class="production-rate"><i class="fas fa-oil-can"></i><span>' + production.toLocaleString('ar-SA') + '</span></div>' +
+                                '<div class="production-label">إنتاج النفط اليومي</div>' +
+                            '</div>' +
+                            '<div class="next-collection">' +
+                                '<div class="timer">' + timeStr + '</div>' +
+                                '<div class="timer-label">متبقي حتى التجميع القادم</div>' +
+                            '</div>' +
+                            '<button class="collect-btn" ' + (!canCollect ? 'disabled' : '') + '>' +
+                                '<i class="fas fa-hand-holding"></i>' +
+                                (canCollect ? 'تجميع ' + production.toLocaleString('ar-SA') + ' نفط' : 'غير متاح للتجميع') +
+                            '</button>' +
+                        '</div>' +
+                        '<div style="text-align:center;padding:10px;color:#64748b;font-size:12px;">' +
+                            '<i class="fas fa-sync-alt fa-spin"></i> جاري تحميل البيانات...' +
+                        '</div>';
+                }
+            }
+        }
+    } catch(e) {}
+})();
+
+// دالة حفظ بيانات بئر النفط
+function saveOilWellData() {
+    try {
+        if (!currentUser) return;
+        
+        var dataToSave = {
+            resources: {
+                gold: resources.gold || 0,
+                oil: resources.oil || 0
+            },
+            mainWellData: {
+                level: mainWellData.level || 0,
+                lastCollection: mainWellData.lastCollection || 0,
+                collectionHistory: (mainWellData.collectionHistory || []).slice(-5)
+            },
+            extraWellsCount: (extraWells || []).length,
+            referrerId: referrerId || null
+        };
+        
+        localStorage.setItem('oil_well_data', JSON.stringify(dataToSave));
+        localStorage.setItem('oil_well_time', Date.now());
+    } catch(e) {}
+}
+
+// حفظ تلقائي كل 15 ثانية
+setInterval(function() {
+    if (currentUser) {
+        saveOilWellData();
+    }
+}, 15000);
+
+// حفظ عند الخروج
+window.addEventListener('beforeunload', function() {
+    if (currentUser) {
+        saveOilWellData();
+    }
+    if (timerInterval) clearInterval(timerInterval);
+});
+
+// تعديل دالة renderPage لحفظ البيانات بعد كل عرض
+var _originalRenderPage = renderPage;
+renderPage = function() {
+    _originalRenderPage();
+    // حفظ بعد العرض
+    setTimeout(function() {
+        if (currentUser) saveOilWellData();
+    }, 500);
+};
+
+// مسح الكاش عند تسجيل الخروج
+var _originalAuth = onAuthStateChanged;
+onAuthStateChanged(auth, async function(user) {
+    if (!user) {
+        localStorage.removeItem('oil_well_data');
+        localStorage.removeItem('oil_well_time');
+    }
+    
+    if (user) {
+        currentUser = user;
+        await saveReferralData(user.uid);
+        await loadUserData(user.uid);
+    } else {
+        var container = document.getElementById('oilContainer');
+        if (container) {
+            container.innerHTML = '<div class="empty-state"><i class="fas fa-sign-in-alt"></i><p>يرجى تسجيل الدخول للوصول إلى بئر النفط</p></div>';
+        }
+    }
+});
 </script>
 </body>
 </html>
